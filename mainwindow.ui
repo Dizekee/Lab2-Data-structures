@@ -79,6 +79,40 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QLineEdit" name="generateCountEdit"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="generateButton">
+      <property name="text">
+       <string>Заполнить структуру</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="asciiButton">
+      <property name="text">
+       <string>Перевести в ASCII</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListWidget" name="asciiDisplayList"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="animatedSortButton">
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="timeLabel">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
