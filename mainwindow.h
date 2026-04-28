@@ -28,6 +28,7 @@ private slots:
 
     void onAsciiConvertClicked();
     void onGenerateDataClicked();
+    void onClearStructClicked();
 
 private:
     void updateDisplay(int highlightIndex = -1);

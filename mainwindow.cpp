@@ -182,6 +182,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->sortButton, &QPushButton::clicked, this, &MainWindow::onSortClicked);
     connect(ui->asciiButton, &QPushButton::clicked, this, &MainWindow::onAsciiConvertClicked);
     connect(ui->generateButton, &QPushButton::clicked, this, &MainWindow::onGenerateDataClicked);
+    connect(ui->clearStructButton, &QPushButton::clicked, this, &MainWindow::onClearStructClicked);
 
     onStructureChanged(0);
 }
@@ -392,13 +393,7 @@ void MainWindow::onGenerateDataClicked()
     for (int i = 0; i < count; ++i) {
         data.push_back(std::rand() % 256);
     }
-
-    qint64 elapsed = operationTimer.elapsed();
     updateDisplay();
-
-    QMessageBox::information(this, "Готово",
-                             QString("Создано %1 элементов.\nВремя генерации: %2")
-                                 .arg(count).arg(formatTime(elapsed * 1000)));
 }
 
 // ============================================================================
@@ -471,4 +466,11 @@ QString MainWindow::formatTime(qint64 microseconds) const
         return QString("%1 мс").arg(microseconds / 1000.0, 0, 'f', 2);
     else
         return QString("%1 с").arg(microseconds / 1000000.0, 0, 'f', 3);
+}
+
+void MainWindow::onClearStructClicked()
+{
+    data.clear();
+    updateDisplay();
+    ui->asciiDisplayList->clear();   // очищаем и ASCII-список, если нужно
 }
