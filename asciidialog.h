@@ -2,21 +2,18 @@
 #define ASCIIDIALOG_H
 
 #include <QDialog>
-#include <QListWidget>
 #include <vector>
+
+class QListWidget;
 
 class AsciiDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit AsciiDialog(const std::vector<int>& sourceData, QWidget *parent = nullptr);
+    explicit AsciiDialog(const std::vector<int>& data, QWidget *parent = nullptr);
 
 private:
-    void populateAsciiList();
-    QString charDescription(int value) const;
-
-    QListWidget* asciiList;
-    std::vector<int> sourceData;
+    QListWidget* m_listWidget;
 };
 
 #endif // ASCIIDIALOG_H

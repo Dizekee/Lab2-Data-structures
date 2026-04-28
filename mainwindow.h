@@ -2,13 +2,21 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtWidgets>
 #include <QElapsedTimer>
 #include <vector>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+// Типы контейнеров (перенесены сюда)
+enum class ContainerType
+{
+    Array,
+    Vector,
+    Stack,
+    Queue
+};
 
 class MainWindow : public QMainWindow
 {
@@ -19,32 +27,39 @@ public:
     ~MainWindow();
 
 private slots:
-    void onStructureChanged(int index);
+    void onContainerTypeChanged(int index);
     void onInsertClicked();
     void onRemoveLastClicked();
     void onReplaceClicked();
     void onSearchClicked();
     void onSortClicked();
-
     void onAsciiConvertClicked();
     void onGenerateDataClicked();
-    void onClearStructClicked();
+    void onClearDataClicked();
 
 private:
     void updateDisplay(int highlightIndex = -1);
-    bool isIndexValid(int idx) const;
-    void shellSort(std::vector<int>& arr);
-    int findFirstIndex(int value) const;
-    QString formatTime(qint64 microseconds) const;
+    void applyDarkStyleSheet();
+
+    // Вспомогательные методы для работы с данными
+    bool insertValue(int value);
+    bool removeLastValue();
+    bool replaceValue(int index, int value);
+    int  searchFirstValue(int value) const;
+    void sortData();
+    void clearData();
+    void generateRandomData(int count);
+    bool isDataEmpty() const;
+    int  dataSize() const;
+    int  maxSizeAllowed() const;
+    const std::vector<int>& getData() const { return m_data; }
 
     Ui::MainWindow *ui;
-    std::vector<int> data;
+    ContainerType m_type;
+    std::vector<int> m_data;
+    QElapsedTimer m_timer;
 
-    enum DataType { ARRAY, VECTOR, STACK, QUEUE };
-    DataType currentType;
-    static const int MAX_ARRAY_SIZE = 100;
-
-    QElapsedTimer operationTimer;
+    static const int ARRAY_MAX = 1000;
 };
 
 #endif // MAINWINDOW_H

@@ -8,11 +8,13 @@ CONFIG += c++17
 
 SOURCES += \
     asciidialog.cpp \
+    asciiservice.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     asciidialog.h \
+    asciiservice.h \
     mainwindow.h
 
 FORMS += \
