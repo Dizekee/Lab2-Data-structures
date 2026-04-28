@@ -19,24 +19,160 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , currentType(ARRAY)
-    , animationTimer(nullptr)
 {
     ui->setupUi(this);
 
-    // Заполнение выбора структур данных
+    this->setStyleSheet(
+        // Главное окно
+        "QMainWindow {"
+        "    background-color: #0a0a0a;"
+        "}"
+
+        // Центральный виджет
+        "QWidget#centralwidget {"
+        "    background-color: #141414;"
+        "    border-radius: 12px;"
+        "    margin: 3px;"
+        "}"
+
+        // Списки (QListWidget)
+        "QListWidget {"
+        "    background-color: #1a1a1a;"
+        "    color: #e0e0e0;"
+        "    border: 1px solid #2a2a2a;"
+        "    border-radius: 8px;"
+        "    padding: 4px;"
+        "    font: 10pt 'Segoe UI';"
+        "    outline: none;"
+        "}"
+        "QListWidget::item {"
+        "    padding: 6px;"
+        "    border-bottom: 1px solid #222222;"
+        "}"
+        "QListWidget::item:selected {"
+        "    background-color: rgba(255, 140, 0, 0.2);"
+        "    color: #ffaa55;"
+        "    border-left: 3px solid #ff8c00;"
+        "}"
+        "QListWidget::item:hover:!selected {"
+        "    background-color: #202020;"
+        "}"
+
+        // Поля ввода (QLineEdit)
+        "QLineEdit {"
+        "    background-color: #1e1e1e;"
+        "    color: #e0e0e0;"
+        "    border: 1px solid #333333;"
+        "    border-radius: 6px;"
+        "    padding: 6px;"
+        "    font: 9pt 'Segoe UI';"
+        "    selection-background-color: #ff8c00;"
+        "}"
+        "QLineEdit:focus {"
+        "    border: 1px solid #ff8c00;"
+        "    background-color: #252525;"
+        "}"
+
+        // Кнопки (QPushButton)
+        "QPushButton {"
+        "    background-color: #1e1e1e;"
+        "    color: #cccccc;"
+        "    border: 1px solid #333333;"
+        "    border-radius: 6px;"
+        "    padding: 6px 12px;"
+        "    font: 9pt 'Segoe UI';"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #2a2a2a;"
+        "    border-color: #ff8c00;"
+        "    color: #ffaa55;"
+        "}"
+        "QPushButton:pressed {"
+        "    background-color: #111111;"
+        "    border-color: #ff8c00;"
+        "}"
+
+        // Выпадающий список (QComboBox)
+        "QComboBox {"
+        "    background-color: #1e1e1e;"
+        "    color: #e0e0e0;"
+        "    border: 1px solid #333333;"
+        "    border-radius: 6px;"
+        "    padding: 5px;"
+        "    font: 9pt 'Segoe UI';"
+        "}"
+        "QComboBox:hover {"
+        "    border-color: #ff8c00;"
+        "}"
+        "QComboBox::drop-down {"
+        "    subcontrol-origin: padding;"
+        "    subcontrol-position: top right;"
+        "    width: 20px;"
+        "    border-left: 1px solid #333333;"
+        "}"
+        "QComboBox::down-arrow {"
+        "    image: none;"
+        "    border-left: 4px solid transparent;"
+        "    border-right: 4px solid transparent;"
+        "    border-top: 5px solid #ff8c00;"
+        "    margin-right: 6px;"
+        "}"
+        "QComboBox QAbstractItemView {"
+        "    background-color: #1a1a1a;"
+        "    color: #e0e0e0;"
+        "    selection-background-color: #2a2a2a;"
+        "    border: 1px solid #ff8c00;"
+        "    border-radius: 4px;"
+        "}"
+        "QComboBox QAbstractItemView::item {"
+        "    padding: 5px;"
+        "}"
+        "QComboBox QAbstractItemView::item:selected {"
+        "    background-color: rgba(255, 140, 0, 0.3);"
+        "    color: #ffaa55;"
+        "}"
+
+        // Метка (QLabel)
+        "QLabel {"
+        "    color: #aaaaaa;"
+        "    font: 9pt 'Segoe UI';"
+        "}"
+        "QLabel#searchResultLabel {"
+        "    color: #ffaa55;"
+        "    font-weight: bold;"
+        "}"
+
+        // Полоса прокрутки
+        "QScrollBar:vertical {"
+        "    background: #141414;"
+        "    width: 10px;"
+        "    border-radius: 5px;"
+        "}"
+        "QScrollBar::handle:vertical {"
+        "    background: #333333;"
+        "    border-radius: 4px;"
+        "    min-height: 20px;"
+        "}"
+        "QScrollBar::handle:vertical:hover {"
+        "    background: #ff8c00;"
+        "}"
+        "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {"
+        "    height: 0px;"
+        "}"
+        );
+
+
     ui->structureCombo->addItem("Array", ARRAY);
     ui->structureCombo->addItem("Vector", VECTOR);
     ui->structureCombo->addItem("Stack", STACK);
     ui->structureCombo->addItem("Queue", QUEUE);
 
-    // Подсказки для полей ввода
     ui->valueLineEdit->setPlaceholderText("Введите число для вставки");
     ui->indexLineEdit->setPlaceholderText("Введите индекс элемента");
     ui->newValueLineEdit->setPlaceholderText("Новое значение");
     ui->searchValueLineEdit->setPlaceholderText("Число для поиска");
     ui->generateCountEdit->setPlaceholderText("Кол-во элементов");
 
-    // Подключение сигналов - оригинальные кнопки
     connect(ui->structureCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &MainWindow::onStructureChanged);
     connect(ui->insertButton, &QPushButton::clicked, this, &MainWindow::onInsertClicked);
@@ -44,18 +180,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->replaceButton, &QPushButton::clicked, this, &MainWindow::onReplaceClicked);
     connect(ui->searchButton, &QPushButton::clicked, this, &MainWindow::onSearchClicked);
     connect(ui->sortButton, &QPushButton::clicked, this, &MainWindow::onSortClicked);
-
-    // Подключение сигналов - новые кнопки (рекомендации)
     connect(ui->asciiButton, &QPushButton::clicked, this, &MainWindow::onAsciiConvertClicked);
     connect(ui->generateButton, &QPushButton::clicked, this, &MainWindow::onGenerateDataClicked);
-    connect(ui->animatedSortButton, &QPushButton::clicked, this, &MainWindow::onAnimatedSortClicked);
 
-    // Настройка таймера для анимации сортировки
-    animationTimer = new QTimer(this);
-    animationTimer->setInterval(50); // 50 мс между шагами анимации
-    connect(animationTimer, &QTimer::timeout, this, &MainWindow::onAnimationStep);
-
-    // Начальная инициализация
     onStructureChanged(0);
 }
 
@@ -65,7 +192,7 @@ MainWindow::~MainWindow()
 }
 
 // ============================================================================
-// ОСНОВНЫЕ СЛОТЫ - УПРАВЛЕНИЕ СТРУКТУРАМИ
+// ОСНОВНЫЕ СЛОТЫ
 // ============================================================================
 
 void MainWindow::onStructureChanged(int index)
@@ -135,10 +262,6 @@ void MainWindow::onReplaceClicked()
     ui->indexLineEdit->setFocus();
 }
 
-// ============================================================================
-// ПОИСК И СОРТИРОВКА
-// ============================================================================
-
 void MainWindow::onSearchClicked()
 {
     bool ok;
@@ -150,7 +273,7 @@ void MainWindow::onSearchClicked()
     int index = findFirstIndex(searchVal);
     if (index != -1) {
         ui->searchResultLabel->setText(QString("Индекс: %1").arg(index));
-        updateDisplay(index); // подсветить найденный элемент
+        updateDisplay(index);
     } else {
         ui->searchResultLabel->setText("Элемент не найден");
     }
@@ -167,17 +290,13 @@ void MainWindow::onSortClicked()
 
     operationTimer.start();
     shellSort(data);
-
     updateDisplay();
 }
 
 // ============================================================================
-// НОВЫЕ ФУНКЦИИ (по рекомендациям)
+// ASCII И ГЕНЕРАЦИЯ
 // ============================================================================
 
-// --- 1. ASCII-конвертация в отдельном окне ---
-// --- ASCII-конвертация: вывод строки символов в QLineEdit ---
-// === ASCII-конвертация: вывод в asciiDisplayList ===
 void MainWindow::onAsciiConvertClicked()
 {
     if (data.empty()) {
@@ -186,19 +305,15 @@ void MainWindow::onAsciiConvertClicked()
     }
 
     operationTimer.start();
-
-    // Очищаем список перед выводом
     ui->asciiDisplayList->clear();
 
-    // Конвертация: берём числа из data, применяем % 128, получаем символ ASCII
     for (size_t i = 0; i < data.size(); ++i) {
         int val = data[i];
-        int asciiCode = ((val % 128) + 128) % 128;  // корректный модуль для отрицательных
+        int asciiCode = ((val % 128) + 128) % 128;
         char ch = static_cast<char>(asciiCode);
 
         QString display;
 
-        // Показываем ТОЛЬКО печатаемые символы (коды 32-126)
         if (asciiCode >= 32 && asciiCode <= 126) {
             if (ch == ' ') {
                 display = "' ' (пробел)";
@@ -206,60 +321,55 @@ void MainWindow::onAsciiConvertClicked()
                 display = QString("'%1'").arg(QChar(ch));
             }
         } else {
-            // Все управляющие символы (0-31 и 127) — официальные названия
             switch (asciiCode) {
-            case 0:  display = "NUL"; break;  // Null
-            case 1:  display = "SOH"; break;  // Start of Heading
-            case 2:  display = "STX"; break;  // Start of Text
-            case 3:  display = "ETX"; break;  // End of Text
-            case 4:  display = "EOT"; break;  // End of Transmission
-            case 5:  display = "ENQ"; break;  // Enquiry
-            case 6:  display = "ACK"; break;  // Acknowledge
-            case 7:  display = "BEL"; break;  // Bell
-            case 8:  display = "BS";  break;  // Backspace
-            case 9:  display = "TAB"; break;  // Horizontal Tab
-            case 10: display = "LF";  break;  // Line Feed
-            case 11: display = "VT";  break;  // Vertical Tab
-            case 12: display = "FF";  break;  // Form Feed
-            case 13: display = "CR";  break;  // Carriage Return
-            case 14: display = "SO";  break;  // Shift Out
-            case 15: display = "SI";  break;  // Shift In
-            case 16: display = "DLE"; break;  // Data Link Escape
-            case 17: display = "DC1"; break;  // Device Control 1
-            case 18: display = "DC2"; break;  // Device Control 2
-            case 19: display = "DC3"; break;  // Device Control 3
-            case 20: display = "DC4"; break;  // Device Control 4 ← вот он!
-            case 21: display = "NAK"; break;  // Negative Acknowledge
-            case 22: display = "SYN"; break;  // Synchronous Idle
-            case 23: display = "ETB"; break;  // End of Transmission Block
-            case 24: display = "CAN"; break;  // Cancel
-            case 25: display = "EM";  break;  // End of Medium
-            case 26: display = "SUB"; break;  // Substitute
-            case 27: display = "ESC"; break;  // Escape
-            case 28: display = "FS";  break;  // File Separator
-            case 29: display = "GS";  break;  // Group Separator
-            case 30: display = "RS";  break;  // Record Separator
-            case 31: display = "US";  break;  // Unit Separator
-            case 127:display = "DEL"; break;  // Delete
-            default: display = "-";           // На всякий случай
+            case 0:  display = "NUL"; break;
+            case 1:  display = "SOH"; break;
+            case 2:  display = "STX"; break;
+            case 3:  display = "ETX"; break;
+            case 4:  display = "EOT"; break;
+            case 5:  display = "ENQ"; break;
+            case 6:  display = "ACK"; break;
+            case 7:  display = "BEL"; break;
+            case 8:  display = "BS";  break;
+            case 9:  display = "TAB"; break;
+            case 10: display = "LF";  break;
+            case 11: display = "VT";  break;
+            case 12: display = "FF";  break;
+            case 13: display = "CR";  break;
+            case 14: display = "SO";  break;
+            case 15: display = "SI";  break;
+            case 16: display = "DLE"; break;
+            case 17: display = "DC1"; break;
+            case 18: display = "DC2"; break;
+            case 19: display = "DC3"; break;
+            case 20: display = "DC4"; break;
+            case 21: display = "NAK"; break;
+            case 22: display = "SYN"; break;
+            case 23: display = "ETB"; break;
+            case 24: display = "CAN"; break;
+            case 25: display = "EM";  break;
+            case 26: display = "SUB"; break;
+            case 27: display = "ESC"; break;
+            case 28: display = "FS";  break;
+            case 29: display = "GS";  break;
+            case 30: display = "RS";  break;
+            case 31: display = "US";  break;
+            case 127:display = "DEL"; break;
+            default: display = "-";   break;
             }
         }
 
-        // Добавляем элемент в список: индекс → исходное число → ASCII-символ
         ui->asciiDisplayList->addItem(
             QString("%1 → %2 → %3")
-                .arg(i, 3)           // индекс с отступом
-                .arg(val, 3)         // исходное число
-                .arg(display)        // ASCII-описание
+                .arg(i, 3)
+                .arg(val, 3)
+                .arg(display)
             );
     }
 
-    // Прокручиваем список в начало
     ui->asciiDisplayList->scrollToTop();
-
 }
 
-// --- 2. Генерация больших данных (имитация работы пользователя) ---
 void MainWindow::onGenerateDataClicked()
 {
     bool ok;
@@ -278,7 +388,6 @@ void MainWindow::onGenerateDataClicked()
     data.clear();
     data.reserve(count);
 
-    // Генерация случайных чисел 0-255 (удобно для демонстрации ASCII)
     std::srand(static_cast<unsigned>(QTime::currentTime().msec()));
     for (int i = 0; i < count; ++i) {
         data.push_back(std::rand() % 256);
@@ -290,92 +399,6 @@ void MainWindow::onGenerateDataClicked()
     QMessageBox::information(this, "Готово",
                              QString("Создано %1 элементов.\nВремя генерации: %2")
                                  .arg(count).arg(formatTime(elapsed * 1000)));
-}
-
-// --- 3. Анимированная сортировка Шелла ---
-void MainWindow::onAnimatedSortClicked()
-{
-    if (data.size() < 2) {
-        QMessageBox::information(this, "Сортировка",
-                                 "Нужно хотя бы 2 элемента для сортировки.");
-        return;
-    }
-    if (data.size() > 200) {
-        auto reply = QMessageBox::question(this, "Большой массив",
-                                           "Анимация " + QString::number(data.size()) +
-                                               " элементов может занять время. Продолжить?",
-                                           QMessageBox::Yes | QMessageBox::No);
-        if (reply == QMessageBox::No) return;
-    }
-
-    // Подготовка данных для анимации
-    sortAnimationData = data;
-    animGap = static_cast<int>(sortAnimationData.size()) / 2;
-    animI = animGap;
-    animJ = 0;
-    animState = 0; // 0=инициализация, 1=сравнение, 2=сдвиг, 3=вставка
-
-    animationTimer->start();
-    operationTimer.start();
-
-    ui->timeLabel->setText("Выполняется анимированная сортировка...");
-    ui->animatedSortButton->setEnabled(false);
-    ui->sortButton->setEnabled(false);
-}
-
-void MainWindow::onAnimationStep()
-{
-    int n = static_cast<int>(sortAnimationData.size());
-
-    // Завершение сортировки
-    if (animGap <= 0) {
-        animationTimer->stop();
-        data = sortAnimationData; // применяем отсортированные данные
-        updateDisplay();
-
-        ui->animatedSortButton->setEnabled(true);
-        ui->sortButton->setEnabled(true);
-        return;
-    }
-
-    // Переход к следующему gap
-    if (animI >= n) {
-        animGap /= 2;
-        animI = animGap;
-        if (animGap <= 0) return;
-    }
-
-    // Подсветка текущего элемента в интерфейсе
-    updateDisplay(animI);
-
-    // Пошаговое выполнение алгоритма Шелла
-    if (animState == 0) {
-        // Инициализация внутреннего цикла
-        animJ = animI;
-        animState = 1;
-    }
-    else if (animState == 1) {
-        // Сравнение элементов
-        if (animJ >= animGap && sortAnimationData[animJ - animGap] > sortAnimationData[animI]) {
-            animState = 2; // нужен сдвиг
-        } else {
-            animState = 3; // вставка
-        }
-    }
-    else if (animState == 2) {
-        // Сдвиг элемента
-        sortAnimationData[animJ] = sortAnimationData[animJ - animGap];
-        updateDisplay(animJ); // визуализация сдвига
-        animJ -= animGap;
-        animState = 1; // вернуться к сравнению
-        return; // ждём следующий таймер
-    }
-    else if (animState == 3) {
-        // Вставка элемента на позицию
-        sortAnimationData[animJ] = sortAnimationData[animI];
-        animI++;
-        animState = 0;
-    }
 }
 
 // ============================================================================
@@ -392,16 +415,15 @@ void MainWindow::updateDisplay(int highlightIndex)
         QListWidgetItem* item = new QListWidgetItem(
             QString("%1 → %2").arg(i).arg(data[i]));
 
-        // Подсветка элемента (для анимации или поиска)
         if (static_cast<int>(i) == highlightIndex) {
-            item->setBackground(QColor(255, 255, 150));
+            item->setBackground(QColor(255, 128, 0));
+            item->setForeground(Qt::white);
             item->setFont(QFont("Arial", 10, QFont::Bold));
         }
         ui->displayListWidget->addItem(item);
     }
     ui->displayListWidget->scrollToBottom();
 
-    // Обновление заголовка окна
     QString typeStr;
     switch (currentType) {
     case ARRAY:  typeStr = "Array"; break;
