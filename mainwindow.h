@@ -9,7 +9,6 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-// Типы контейнеров (перенесены сюда)
 enum class ContainerType
 {
     Array,
@@ -41,7 +40,6 @@ private:
     void updateDisplay(int highlightIndex = -1);
     void applyDarkStyleSheet();
 
-    // Вспомогательные методы для работы с данными
     bool insertValue(int value);
     bool removeLastValue();
     bool replaceValue(int index, int value);
@@ -59,7 +57,7 @@ private:
     std::vector<int> m_data;
     QElapsedTimer m_timer;
 
-    static const int ARRAY_MAX = 1000;
+    static const int ARRAY_MAX = 100;
 };
 
 #endif // MAINWINDOW_H

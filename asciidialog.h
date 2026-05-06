@@ -16,4 +16,4 @@ private:
     QListWidget* m_listWidget;
 };
 
-#endif // ASCIIDIALOG_H
+#endif
